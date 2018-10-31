@@ -1,0 +1,81 @@
+TSW
+
+CRUD en REST
+
+/rest/usuario								POST	registrar usuario
+/rest/usuario/{user}						GET		perfil de usuario {user} (solo lo ve el propio usuario)
+
+/rest/encuesta								POST	crear encuesta
+
+/rest/encuesta/{id}							GET		detalle de encuesta con id: {id} (Devuelve objeto Encuesta, con sus Fechas, Horas y Votos)
+/rest/encuesta/{id}							PUT		editar nombre de la encuesta {id} (OPCIONAL?)
+/rest/encuesta/{id}							DELETE	eliminar encuesta {id}
+
+/rest/encuesta/{id}							POST	crear fecha y hora en encuesta {id}
+/rest/encuesta/{id}/{fecha}					DELETE	elimina fecha {fecha} y sus horas en encuesta {id}
+
+/rest/encuesta/{id}/{fecha}					POST	crea hora en la fecha {fecha} y encuesta {id}
+/rest/encuesta/{id}/{fecha}/{hora}			DELETE	elimina hora {hora} en la fecha {fecha} de la encuesta {id}
+
+/rest/encuesta/{id}/{fecha}/{hora}			POST	vota en la {hora} de la {fecha} de la encuesta {id}
+/rest/encuesta/{id}/{fecha}/{hora}/voto		DELETE	quita voto del usuario {user} de la {hora} de la {fecha} de la encuesta {id}
+
+
+
+DISEÑO API REST
+
+URI						METODO HTTP		Parámetros Ruta URI		Contenido Petición							Contenido Respuesta			Códigos de Respuesta			Autenticación (Básica HTTP)	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/rest/usuario			POST			No						Usuario en JSON:							No u OK						201 Created						No
+																{"email": string, "password": string		errores de validacion		404 si error de validacion
+																"nombre": string}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/rest/user/{user}		GET				user: email usuario		No											JSON con array de			200 OK							Si, deberíamos autenticar
+																											objetos Encuesta			401 si no envío credenciales	la petición y ser {user}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/rest/encuesta			POST			No						Datos nueva encuesta en JSON:				No u OK						201 Created						Si, deberíamos autenticar
+																{"nombre": string}							errores de validacion		401 si no envío credenciales	la petición
+																																		404 si error de validacion
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/rest/encuesta/{id}		GET				id: id encuesta			No											JSON con objeto Encuesta	200 OK							No
+																											con parametros de Fechas,	404 si no se encuentra la
+																											Horas, y Votos					encuesta
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/rest/encuesta/{id}		PUT				id: id encuesta			Nuevos datos para la encuesta en JSON:		No u OK						200 OK							Si, deberíamos autenticar
+																{"nombre": string}							error si no se edita		401 si no envío credenciales	la petición y ser el usuario
+																																		404 si falla al editar			propietario de la encuesta
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/rest/encuesta/{id}		DELETE			id: id encuesta			No											No u OK						200 OK							Si, deberíamos autenticar
+																											error si no se elimina		401 si no envío credenciales	la petición y ser el usuario
+																																		404 si falla borrar				propietario de la encuesta
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/rest/encuesta/{id}		POST			id: id encuesta			Datos para la nueva fecha en JSON:			No u OK						200 OK							Si, deberíamos autenticar
+																{"fecha": string}							error si falla				401 si no envío credenciales	la petición y ser el usuario
+																																		404 si falla					propietario de la encuesta
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/rest/encuesta/{id}/{fecha}		DELETE	id: id encuesta			No											No u OK						200 OK							Si, deberíamos autenticar
+										fecha: fecha a borrar												error si falla				401 si no envío credenciales	la petición y ser el usuario
+																																		404 si falla					propietario de la encuesta
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/rest/encuesta/{id}/{fecha}		POST			id: encuesta	Datos para la nueva hora en JSON:			No u OK						200 OK							Si, deberíamos autenticar
+												fecha: fecha	{"horaInicio": string,						error si falla				401 si no envío credenciales	la petición y ser el usuario
+																"horaFin": string}														404 si falla					propietario de la encuesta
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/rest/encuesta/{id}/{fecha}/{hora}	DELETE		id: encuesta	No											No u OK						200 OK							Si, deberíamos autenticar
+												fecha: fecha												error si falla				401 si no envío credenciales	la petición y ser el usuario
+												hora: hora a																			404 si falla					propietario de la encuesta
+													borrar
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/rest/encuesta/{id}/{fecha}/{hora}		POST	id: encuesta	No											No u OK						200 OK							Si, deberíamos autenticar
+												fecha: fecha												error si falla				401 si no envío credenciales	la petición
+												hora: hora																				404 si falla					
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/rest/encuesta/{id}/{fecha}/{hora}/voto	DELETE	id: encuesta	No											No u OK						200 OK							Si, deberíamos autenticar
+												fecha: fecha												error si falla				401 si no envío credenciales	la petición
+												hora: hora 																				404 si falla					
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
