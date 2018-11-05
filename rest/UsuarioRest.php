@@ -12,7 +12,7 @@ require_once(__DIR__."/BaseRest.php");
 * are intended to be mapped as callbacks using the URIDispatcher class.
 *
 */
-class UserRest extends BaseRest {
+class UsuarioRest extends BaseRest {
 
 	public function __construct() {
 		parent::__construct();
@@ -20,8 +20,6 @@ class UserRest extends BaseRest {
 
 	public function register($data) {
 		try {
-			$user->checkIsValidForRegister();
-
 			(new LoginModel())->registrar($data->email, $data->password, $data->nombre);
 
 			header($_SERVER['SERVER_PROTOCOL'].' 201 Created');
@@ -49,7 +47,7 @@ class UserRest extends BaseRest {
 }
 
 // URI-MAPPING for this Rest endpoint
-$userRest = new UserRest();
+$userRest = new UsuarioRest();
 URIDispatcher::getInstance()
 ->map("GET",	"/usuario/$1", array($userRest,"login"))
 ->map("POST", "/usuario", array($userRest,"register"));

@@ -1,6 +1,7 @@
 <?php
 
-include_once "Classes/MSGException.php";
+include_once __DIR__."/../../Classes/MSGException.php";
+
 
 class EncuestaModel {
     
