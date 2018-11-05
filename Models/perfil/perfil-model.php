@@ -23,7 +23,7 @@ class PerfilModel {
     //Tira MSGException si falla
     function nuevaEncuesta($nombre, $propietario) {
         try {
-            $id = md5(uniqid($_SESSION["email"], true));
+            $id = md5(uniqid($propietario, true));
 
             $stmt = $this->dbh->prepare("INSERT INTO ENCUESTA (ID, NOMBRE, PROPIETARIO) VALUES (:id, :nombre, :propietario)");
             $stmt->bindParam(":id", $id);
