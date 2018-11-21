@@ -1,7 +1,6 @@
 <?php
 
-class Voto
-{
+class Voto implements JsonSerializable {
 
 private $usuario;
 private $idEncuesta;
@@ -41,5 +40,15 @@ private $horaFin;
 	{
 		return $this->horaFin;
 	}
+
+	public function jsonSerialize() {
+        return [
+			'usuario' => $this->usuario,
+			'idEncuesta' => $this->idEncuesta,
+			'fecha' => $this->fecha,
+			'horaInicio' => $this->horaInicio,
+			'horaFin' => $this->horaFin
+        ];
+    }
 }
 ?>

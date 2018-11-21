@@ -1,5 +1,5 @@
 <?php
-class Fecha {
+class Fecha implements JsonSerializable {
 
     //Privado porque no se deben cambiar nunca desde fuera
     private $fecha;
@@ -19,6 +19,13 @@ class Fecha {
     function getFecha()
     {
         return $this->fecha;
+    }
+
+    public function jsonSerialize() {
+        return [
+            'fecha' => $this->fecha,
+            'horas' => $this->horas
+        ];
     }
 }
 ?>

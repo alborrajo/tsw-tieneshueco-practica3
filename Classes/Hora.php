@@ -1,6 +1,5 @@
 <?php
-class Hora
-{
+class Hora implements JsonSerializable {
 	private $horaInicio;
 	private $horaFin;
 
@@ -10,18 +9,19 @@ class Hora
 	$this->horaFin = $horaFin;
 	}
 
-	function getHoraInicio()
-	{
-
+	function getHoraInicio() {
 		return $this->horaInicio;
-
 	}
 
-	function getHoraFin()
-	{
-
+	function getHoraFin() {
 		return $this->horaFin;
-
 	}
+
+	public function jsonSerialize() {
+        return [
+            'horaInicio' => $this->horaInicio,
+            'horaFin' => $this->horaFin
+        ];
+    }
 }
 ?>
