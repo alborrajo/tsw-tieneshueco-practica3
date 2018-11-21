@@ -1,5 +1,5 @@
 <?php
-class Encuesta {
+class Encuesta implements JsonSerializable {
 
     //Privado porque no se deben cambiar nunca desde fuera
     private $ID;
@@ -33,6 +33,14 @@ class Encuesta {
 
     function getFechas() {
         return $this->fechas;
+    }
+
+    public function jsonSerialize() {
+        return [
+            'id' => $this->ID,
+            'propietario' => $this->propietario,
+            'fechas' => $this->fechas
+        ];
     }
 
 }
