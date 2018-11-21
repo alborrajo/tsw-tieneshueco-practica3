@@ -2,6 +2,7 @@
 
 require_once(__DIR__."/../Models/perfil/perfil-model.php");
 require_once(__DIR__."/../Models/encuesta/encuesta-model.php");
+
 require_once(__DIR__."/BaseRest.php");
 
 /**
@@ -20,16 +21,16 @@ class EncuestaRest extends BaseRest {
 
 	public function nuevaEncuesta($data) {
         $currentLogged = parent::authenticateUser();
-		if ($currentLogged == $_SERVER['PHP_AUTH_USER']) {
+		if ($currentLogged != false) { //Si currentLogged no es false entonces el usuario existe y está logeado
             try {
                 (new PerfilModel())->nuevaEncuesta($data->nombre, $_SERVER['PHP_AUTH_USER']);
 
                 header($_SERVER['SERVER_PROTOCOL'].' 201 Created');
-                header("Location: ".$_SERVER['REQUEST_URI']."/".$_SERVER['PHP_AUTH_USER']);
+                exit;
             } catch(MSGException $e) {
                 http_response_code(404);
                 header('Content-Type: application/json');
-                die($e->getMessage());
+                die(json_encode($e));
             }
         } else {
             http_response_code(401);
@@ -37,12 +38,46 @@ class EncuestaRest extends BaseRest {
         }
     }
     
-    public function delEncuesta($id) {
-		
-    }
-    
     public function getEncuesta($id) {
-		
+        try {
+            $encuesta = (new EncuestaModel())->getEncuesta($id);
+
+            //Respuesta si no se ha encontrado la encuesta
+            if($encuesta == null) {
+                http_response_code(404);
+                header('Content-Type: application/json');
+                exit;
+            }
+
+            //Respuesta
+            header($_SERVER['SERVER_PROTOCOL'].' 200 OK');
+            header('Content-Type: application/json');
+            echo(json_encode($encuesta));
+        }
+        catch (MSGException $e) {
+            //Si falla algo, Internal Server Error
+            http_response_code(500);
+            header('Content-Type: application/json');
+            die(json_encode($e));
+        }   
+    }
+
+    public function delEncuesta($id) {
+		$currentLogged = parent::authenticateUser();
+		if ($currentLogged == (new PerfilModel)->getPropietarioEncuesta($id)) {
+            try {
+                (new PerfilModel())->delEncuesta($id);
+
+                header($_SERVER['SERVER_PROTOCOL'].' 200 OK');
+            } catch(MSGException $e) {
+                http_response_code(404);
+                header('Content-Type: application/json');
+                die(json_encode($e));
+            }
+        } else {
+            http_response_code(403);
+            die("El usuario debe identificarse");
+        } 
     }
 
     public function addFecha($id,$data) {

@@ -84,7 +84,7 @@ class PerfilModel {
 
             foreach($stmt->fetchAll() as $encuesta) {
                 //Por cada Encuesta encontrada, añadir al array un nuevo objeto con los datos encontrados
-                $toReturn["encuestas"][] = (array)new Encuesta($encuesta["ID"],$encuesta["NOMBRE"],$encuesta["PROPIETARIO"]);
+                $toReturn["encuestas"][] = new Encuesta($encuesta["ID"],$encuesta["NOMBRE"],$encuesta["PROPIETARIO"]);
             }
 
             //Encuestas compartidas
@@ -95,7 +95,7 @@ class PerfilModel {
 
             foreach($stmt->fetchAll() as $encuesta) {
                 //Por cada Encuesta Compartida encontrada, añadir al array un nuevo objeto con los datos encontrados
-                $toReturn["encuestasCompartidas"][] = (array)new Encuesta($encuesta["ID"],$encuesta["NOMBRE"],$encuesta["PROPIETARIO"]);
+                $toReturn["encuestasCompartidas"][] = new Encuesta($encuesta["ID"],$encuesta["NOMBRE"],$encuesta["PROPIETARIO"]);
             }
 
             return $toReturn;

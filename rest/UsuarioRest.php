@@ -23,11 +23,10 @@ class UsuarioRest extends BaseRest {
 			(new LoginModel())->registrar($data->email, $data->password, $data->nombre);
 
 			header($_SERVER['SERVER_PROTOCOL'].' 201 Created');
-			header("Location: ".$_SERVER['REQUEST_URI']."/".$data->email);
 		}catch(MSGException $e) {
 			http_response_code(400);
 			header('Content-Type: application/json');
-			echo(json_encode($e->getMessage()));
+			echo(json_encode($e));
 		}
 	}
 
@@ -37,7 +36,7 @@ class UsuarioRest extends BaseRest {
 			header($_SERVER['SERVER_PROTOCOL'].' 403 Forbidden');
 			echo("You are not authorized to login as anyone but you");
 		} else {
-			header($_SERVER['SERVER_PROTOCOL'].' 200 Ok');
+			header($_SERVER['SERVER_PROTOCOL'].' 200 OK');
 
 			// Perfil
 			$encuestas = (new PerfilModel())->getEncuestas($email);
