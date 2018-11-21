@@ -25,7 +25,6 @@ class EncuestaRest extends BaseRest {
                 (new PerfilModel())->nuevaEncuesta($data->nombre, $_SERVER['PHP_AUTH_USER']);
 
                 header($_SERVER['SERVER_PROTOCOL'].' 201 Created');
-                header("Location: ".$_SERVER['REQUEST_URI']."/".$_SERVER['PHP_AUTH_USER']);
             } catch(MSGException $e) {
                 http_response_code(404);
                 header('Content-Type: application/json');
@@ -46,15 +45,58 @@ class EncuestaRest extends BaseRest {
     }
 
     public function addFecha($id,$data) {
+        $currentLogged = parent::authenticateUser();
+        if ($currentLogged == $_SERVER['PHP_AUTH_USER']) {
+            try {
+                (new EncuestaModel())->addFecha($id, $data->fecha);
+
+                header($_SERVER['SERVER_PROTOCOL'].' 201 Data added');
+            } catch(MSGException $e) {
+                http_response_code(404);
+                header('Content-Type: application/json');
+                die($e->getMessage());
+            }
+        } else {
+            http_response_code(401);
+            die("El usuario debe identificarse");
+        }
 		
     }
 
     public function delFecha($id,$fecha) {
-		
+		$currentLogged = parent::authenticateUser();
+        if ($currentLogged == $_SERVER['PHP_AUTH_USER']) {
+            try {
+                (new EncuestaModel())->delFecha($id, $fecha);
+
+                header($_SERVER['SERVER_PROTOCOL'].' 201 Data deleted');
+            } catch(MSGException $e) {
+                http_response_code(404);
+                header('Content-Type: application/json');
+                die($e->getMessage());
+            }
+        } else {
+            http_response_code(401);
+            die("El usuario debe identificarse");
+        }
     }
 
     public function addHora($id,$fecha,$data) {
-		
+		$currentLogged = parent::authenticateUser();
+        if ($currentLogged == $_SERVER['PHP_AUTH_USER']) {
+            try {
+                (new EncuestaModel())->addHora($id, $fecha, $data->horaInicio, $data->horaFin);
+
+                header($_SERVER['SERVER_PROTOCOL'].' 201 Hour added');
+            } catch(MSGException $e) {
+                http_response_code(404);
+                header('Content-Type: application/json');
+                die($e->getMessage());
+            }
+        } else {
+            http_response_code(401);
+            die("El usuario debe identificarse");
+        }
     }
 
     public function delHora($id,$fecha,$hora) {
