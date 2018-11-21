@@ -43,11 +43,11 @@ private $horaFin;
 
 	public function jsonSerialize() {
         return [
-			'usuario' => $this->usuario,
-			'idEncuesta' => $this->idEncuesta,
-			'fecha' => $this->fecha,
-			'horaInicio' => $this->horaInicio,
-			'horaFin' => $this->horaFin
+			'usuario' => $this->getUsuario(),
+			'idEncuesta' => $this->getIdEncuesta(),
+			'fecha' => $this->getFecha(),
+			'horaInicio' => $this->getHoraInicio(),
+			'horaFin' => $this->getHoraFin()
         ];
     }
 }

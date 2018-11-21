@@ -19,8 +19,8 @@ class Hora implements JsonSerializable {
 
 	public function jsonSerialize() {
         return [
-            'horaInicio' => $this->horaInicio,
-            'horaFin' => $this->horaFin
+            'horaInicio' => $this->getHoraInicio(),
+            'horaFin' => $this->getHoraFin()
         ];
     }
 }

@@ -37,9 +37,10 @@ class Encuesta implements JsonSerializable {
 
     public function jsonSerialize() {
         return [
-            'id' => $this->ID,
-            'propietario' => $this->propietario,
-            'fechas' => $this->fechas
+            'id' => $this->getID(),
+            'nombre' => $this->getNombre(),
+            'propietario' => $this->getPropietario(),
+            'fechas' => $this->getFechas()
         ];
     }
 

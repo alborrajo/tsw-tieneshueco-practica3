@@ -1,5 +1,5 @@
 <?php
-class MSGException extends Exception {
+class MSGException extends Exception implements JsonSerializable {
 
     /*
     Status: Cambia el color de la alerta (Bootstrap)
@@ -37,6 +37,13 @@ class MSGException extends Exception {
             $msg = null;
         }
         return $msg;
+    }
+
+    public function jsonSerialize() {
+        return [
+            'message' => $this->getMessage(),
+            'status' => $this->getStatus()
+        ];
     }
 
 

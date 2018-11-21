@@ -23,8 +23,8 @@ class Fecha implements JsonSerializable {
 
     public function jsonSerialize() {
         return [
-            'fecha' => $this->fecha,
-            'horas' => $this->horas
+            'fecha' => $this->getFecha(),
+            'horas' => $this->getHoras()
         ];
     }
 }
