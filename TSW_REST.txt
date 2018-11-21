@@ -74,7 +74,8 @@ URI						METODO HTTP		Parámetros Ruta URI		Contenido Petición							Contenido 
 												fecha: fecha												error si falla				401 si no envío credenciales	la petición
 												hora: hora																				404 si falla					
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-/rest/encuesta/{id}/{fecha}/{hora}/voto	DELETE	id: encuesta	No											No u OK						200 OK							Si, deberíamos autenticar
+/rest/encuesta/{id}/{fecha}/{horaInicio}/
+{horaFin}/voto							DELETE	id: encuesta	No											No u OK						200 OK							Si, deberíamos autenticar
 												fecha: fecha												error si falla				401 si no envío credenciales	la petición
 												hora: hora 																				404 si falla					
 												user: email
