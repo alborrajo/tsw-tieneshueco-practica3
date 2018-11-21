@@ -85,7 +85,7 @@ class EncuestaRest extends BaseRest {
 		$currentLogged = parent::authenticateUser();
         if ($currentLogged == $_SERVER['PHP_AUTH_USER']) {
             try {
-                (new EncuestaModel())->addHora($id, $fecha, $horaInicio, $horaFin);
+                (new EncuestaModel())->addHora($id, $fecha, $data->horaInicio, $data->horaFin);
 
                 header($_SERVER['SERVER_PROTOCOL'].' 201 Hour added');
             } catch(MSGException $e) {
