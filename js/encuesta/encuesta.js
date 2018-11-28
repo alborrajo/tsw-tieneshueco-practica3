@@ -26,6 +26,7 @@ newEncuesta: function(data) {
 			}
 		}
 	);
+
 },
 
 deleteEncuesta: function(id) {
