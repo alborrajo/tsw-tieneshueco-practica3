@@ -137,17 +137,96 @@ class EncuestaRest extends BaseRest {
         }
     }
 
-    public function delHora($id,$fecha,$hora) {
+    public function delHora($id,$fecha,$horaInicio, $horaFin) {
+
+        $currentLogged = parent::authenticateUser();
+        
+        $encuesta = (new EncuestaModel())->getEncuesta($id);
+        $propietario = $encuesta->getPropietario();
+
+        if($currentLogged == $propietario)
+        {
+            try
+            {
+                (new EncuestaModel())->delHora($id, $fecha, $horaInicio, $horaFin);
+                http_response_code(201);
+                exit;
+            }
+            catch(MSGException $e)
+            {
+                http_response_code(404);
+                header('Content-Type: application/json');
+                die($e->getMessage());
+            }
+        }
+        else
+        {
+            http_response_code(401);
+            die("No es el propietario de la encuesta.");
+        }
+
+
 		
     }
     
-    public function addVoto($id,$fecha,$hora,$data) {
-		
+    public function addVoto($id,$fecha,$horaInicio,$horaFin) {
+
+
+        $currentLogged = parent::authenticateUser();
+        if($currentLogged == $_SERVER['PHP_AUTH_USER'])
+        {
+            try
+            {
+                (new EncuestaModel())->addVoto($id, 
+                $_SERVER['PHP_AUTH_USER'], $fecha,$horaInicio,$horaFin);
+    
+                http_response_code(201);
+                exit;
+            }
+            catch(MSGException $e)
+            {
+                http_response_code(404);
+                header('Content-Type: application/json');
+                die($e->getMessage());
+            }
+        }
+        else
+        {
+            http_response_code(401);
+            die("El usuario debe identificarse");
+        }
+        
     }
 
-    public function delVoto($id,$fecha,$hora,$email) {
-		
-    }
+    public function delVoto($id,$fecha,$horaInicio,$horaFin) {
+
+        //URL para pruebas http://localhost/rest/encuesta/20d59b95948b67ce4cadaac4f7934b1a/2018-12-05/12:00:00/14:00:00/voto
+
+        $currentLogged = parent::authenticateUser();
+        if($currentLogged == $_SERVER['PHP_AUTH_USER'])
+        {
+            try
+            {
+                (new EncuestaModel())->delVoto($id, 
+                $_SERVER['PHP_AUTH_USER'], $fecha,$horaInicio,$horaFin);
+    
+                http_response_code(201);
+                exit;
+            }
+            catch(MSGException $e)
+            {
+                http_response_code(404);
+                header('Content-Type: application/json');
+                die($e->getMessage());
+            }
+        }
+        else
+        {
+            http_response_code(401);
+            die("El usuario debe identificarse");
+        }
+            
+        }
 
 }
 
@@ -160,7 +239,7 @@ URIDispatcher::getInstance()
 ->map("POST",	"/encuesta/$1", array($encuestaRest,"addFecha"))
 ->map("DELETE",	"/encuesta/$1/$2", array($encuestaRest,"delFecha"))
 ->map("POST",	"/encuesta/$1/$2", array($encuestaRest,"addHora"))
-->map("DELETE",	"/encuesta/$1/$2/$3", array($encuestaRest,"delHora"))
-->map("POST",	"/encuesta/$1/$2/$3", array($encuestaRest,"addVoto"))
-->map("DELETE",	"/encuesta/$1/$2/$3/$4", array($encuestaRest,"delVoto"));
+->map("DELETE",	"/encuesta/$1/$2/$3/$4", array($encuestaRest,"delHora"))
+->map("POST",	"/encuesta/$1/$2/$3/$4/voto", array($encuestaRest,"addVoto"))
+->map("DELETE",	"/encuesta/$1/$2/$3/$4/voto", array($encuestaRest,"delVoto"));
 
