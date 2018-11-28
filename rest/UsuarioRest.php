@@ -40,6 +40,7 @@ class UsuarioRest extends BaseRest {
 
 			// Perfil
 			$encuestas = (new PerfilModel())->getEncuestas($email);
+			header('Content-Type: application/json');
 			echo(json_encode($encuestas));
 		}
 	}

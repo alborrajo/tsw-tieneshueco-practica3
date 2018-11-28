@@ -1,0 +1,46 @@
+{
+    "locale-UserGetError": "Error obteniendo datos sobre el usuario",
+    "locale-UserRegisterError": "Error registrando datos del usuario",
+
+    "locale-DBConnectionError": "Error conectando con la BD",
+    "locale-EncuestaAddError": "Error añadiendo la nueva encuesta",
+    "locale-EncuestaGetError": "Error obteniendo datos sobre la encuesta",
+    "locale-EncuestasGetError": "Error obteniendo datos de las encuestas del usuario",
+    "locale-EncuestaDeleteError": "Error eliminando encuesta",
+
+    "locale-DateAddError": "Error añadiendo la nueva fecha",
+    "locale-HourAddError": "Error añadiendo la nueva hora",
+    "locale-DateDeleteError": "Error eliminando la fecha",
+    "locale-HourDeleteError": "Error eliminando la hora",
+    "locale-VotosGetError": "Error obteniendo datos de los votos en la encuesta",
+    "locale-VotoAddError": "Error añadiendo el nuevo voto",
+    "locale-VotoDeleteError": "Error eliminando el voto",
+
+    "locale-pageName": "Tieneshueco?",
+    "locale-NewEncuesta": "Nueva Encuesta",
+    "locale-NewEncuestaName": "Nombre",
+    "locale-Close": "Cerrar",
+    "locale-Create": "Crear",
+
+    "locale-Login": "Iniciar Sesión",
+    "locale-Email": "Correo electrónico",
+    "locale-Password": "Contraseña",
+    "locale-Enter": "Entrar",
+    "locale-Remember": "Recuerdame",
+    "locale-Register": "Registrarse",
+
+    "locale-RegisterForm": "Registro",
+    "locale-Name": "Nombre",
+
+    "locale-Polls": "Encuestas",
+    "locale-SharedPolls": "Encuestas compartidas",
+
+    "locale-ParticipatePoll": "Participa en la encuesta",
+    "locale-Dates": "Fechas",
+    "locale-Hours": "Horas",
+
+    "locale-EditPoll": "Edita tu encuesta",
+    "locale-EditPollMsg": "Ahora podrás editar tu encuesta, decide entre que días estará la votación y envía el enlace generado para que la gente empiece a votar.",
+    "locale-NewFecha": "Nueva fecha",
+    "locale-ShareLink": "Comparte este link para que la gente participe"
+}

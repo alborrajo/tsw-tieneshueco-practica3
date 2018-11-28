@@ -1,0 +1,47 @@
+{
+    "locale-UserGetError": "Error obtaining user data",
+    "locale-UserRegisterError": "Error registering user data",
+
+    "locale-DBConnectionError": "Error connecting to the DB",
+    "locale-EncuestaAddError": "Error adding new poll",
+    "locale-EncuestaGetError": "Error obtaining poll data",
+    "locale-EncuestasGetError": "Error obteniendo user's polls data",
+    "locale-EncuestaDeleteError": "Error deleting poll",
+
+    "locale-DateAddError": "Error adding new date",
+    "locale-HourAddError": "Error adding new hour",
+    "locale-DateDeleteError": "Error deleting date",
+    "locale-HourDeleteError": "Error deleting hour",
+    "locale-VotosGetError": "Error obtaining poll votes",
+    "locale-VotoAddError": "Error adding new vote",
+    "locale-VotoDeleteError": "Error deleting vote",
+
+
+    "locale-pageName": "Tieneshueco?",
+    "locale-NewEncuesta": "New Poll",
+    "locale-NewEncuestaName": "Name",
+    "locale-Close": "Close",
+    "locale-Create": "Create",
+
+    "locale-Login": "Log In",
+    "locale-Email": "e-mail",
+    "locale-Password": "Password",
+    "locale-Enter": "Enter",
+    "locale-Remember": "Remember me",
+    "locale-Register": "Register",
+
+    "locale-RegisterForm": "Register",
+    "locale-Name": "Name",
+
+    "locale-Polls": "Polls",
+    "locale-SharedPolls": "Shared polls",
+
+    "locale-ParticipatePoll": "Participate on the poll",
+    "locale-Dates": "Dates",
+    "locale-Hours": "Hours",
+    
+    "locale-EditPoll": "Edit poll",
+    "locale-EditPollMsg": "Now you'll be able to edit your poll, decide which days to vote, and share the generated link so other people can begin voting.",
+    "locale-NewFecha": "New date",
+    "locale-ShareLink": "Share this link so people can participate"
+}

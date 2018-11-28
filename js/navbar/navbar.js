@@ -1,0 +1,39 @@
+Navbar = {
+
+	navbarView: function(domElement, logeado) {
+		// Cargar navbar
+		$.get('/Templates/navbar/navbar.hbs', function (data) {
+			var template=Handlebars.compile(data);
+			domElement.html(template());
+
+			// Set click action for locale buttons
+			$(".btn-locale").click(function() {
+				setLocale( $(this).attr('id') ); // Set clicked button ID as locale
+			});
+
+			// Si está logeado, mostrar botones de logeado en la navbar
+			if(logeado) {this.navbarLoggedButtonsView($("#loggedButtons"));}
+
+		}, 'html');
+	},
+
+
+	navbarLoggedButtonsView: function(domElement) {
+		$.get('/Templates/navbar/loggedButtons.hbs', function (data) {
+			var template=Handlebars.compile(data);
+			domElement.html(template());
+
+			$("#logoutButton").click(function() {
+				Cookies.remove('email');
+				Cookies.remove('password');
+				window.location = '/';
+			});
+
+			$("#newEncuestaForm").submit(function() {
+				Encuesta.newEncuesta(ConvertFormToJSON($("#newEncuestaForm")))
+				return false; // Que no envie el formulario
+			})
+		});
+	}
+
+}

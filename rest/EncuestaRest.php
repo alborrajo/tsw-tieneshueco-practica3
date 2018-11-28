@@ -23,7 +23,9 @@ class EncuestaRest extends BaseRest {
         $currentLogged = parent::authenticateUser();
 		if ($currentLogged != false) { //Si currentLogged no es false entonces el usuario existe y está logeado
             try {
-                (new PerfilModel())->nuevaEncuesta($data->nombre, $_SERVER['PHP_AUTH_USER']);
+                $idEncuesta = (new PerfilModel())->nuevaEncuesta($data->nombre, $_SERVER['PHP_AUTH_USER']);
+
+                echo json_encode(["id" => $idEncuesta, "nombre" => $data->nombre]);
 
                 header($_SERVER['SERVER_PROTOCOL'].' 201 Created');
                 exit;
@@ -81,15 +83,58 @@ class EncuestaRest extends BaseRest {
     }
 
     public function addFecha($id,$data) {
+        $currentLogged = parent::authenticateUser();
+        if ($currentLogged == (new PerfilModel)->getPropietarioEncuesta($id)) {
+            try {
+                (new EncuestaModel())->addFecha($id, $data->fecha);
+
+                header($_SERVER['SERVER_PROTOCOL'].' 201 Created');
+            } catch(MSGException $e) {
+                http_response_code(404);
+                header('Content-Type: application/json');
+                die($e->getMessage());
+            }
+        } else {
+            http_response_code(401);
+            die("El usuario debe identificarse");
+        }
 		
     }
 
     public function delFecha($id,$fecha) {
-		
+		$currentLogged = parent::authenticateUser();
+        if ($currentLogged == (new PerfilModel)->getPropietarioEncuesta($id)) {
+            try {
+                (new EncuestaModel())->delFecha($id, $fecha);
+
+                header($_SERVER['SERVER_PROTOCOL'].' 201 Created');
+            } catch(MSGException $e) {
+                http_response_code(404);
+                header('Content-Type: application/json');
+                die($e->getMessage());
+            }
+        } else {
+            http_response_code(401);
+            die("El usuario debe identificarse");
+        }
     }
 
     public function addHora($id,$fecha,$data) {
-		
+		$currentLogged = parent::authenticateUser();
+        if ($currentLogged == (new PerfilModel)->getPropietarioEncuesta($id)) {
+            try {
+                (new EncuestaModel())->addHora($id, $fecha, $data->horaInicio, $data->horaFin);
+
+                header($_SERVER['SERVER_PROTOCOL'].' 201 Created');
+            } catch(MSGException $e) {
+                http_response_code(404);
+                header('Content-Type: application/json');
+                die($e->getMessage());
+            }
+        } else {
+            http_response_code(401);
+            die("El usuario debe identificarse");
+        }
     }
 
     public function delHora($id,$fecha,$hora) {

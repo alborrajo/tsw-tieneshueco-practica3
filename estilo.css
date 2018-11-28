@@ -1,0 +1,34 @@
+.navbar-bg {
+	background-image:
+		linear-gradient(
+			rgba(228, 188, 152, 0.9),
+			rgba(228, 188, 152, 0.9)
+		),
+		url("/images/single_paper_texture_stock_by_ai_forte-d5g1vjx.jpg");
+		
+	background-color: #e4bc98;
+
+
+	border-bottom: 2pt;
+	border-style: groove;
+}
+
+.main-bg {
+	background-image:
+		linear-gradient(
+			rgba(255, 255, 255, 0.75),
+			rgba(255, 255, 255, 0.75)
+		),
+		url("/images/single_paper_texture_stock_by_ai_forte-d5g1vjx.jpg");
+}
+
+.color-blue {
+	color: #67a6cf;
+}
+
+.btn-primary {
+	background-color: #67a6cf;
+	border-color: #67a6cf;
+}
+
+
