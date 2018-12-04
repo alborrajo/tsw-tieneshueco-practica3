@@ -16,8 +16,7 @@ newEncuesta: function(data) {
 			"data": JSON.stringify(data),
 
 			"success": function (responseData) {
-				Perfil.encuestaView($("#encuestas"), responseData); // TODO: Borrar
-				alert("Redirigir a vista de editar");
+				Perfil.encuestaView($("#encuestas"), responseData);
 				return true;
 			},
 			"error": function(xhr, status, error) {
@@ -48,6 +47,108 @@ deleteEncuesta: function(id) {
 			}
 		}
 	);
+},
+
+editEncuesta: function(id) {
+	$.ajax(
+		{
+			"method": "GET",
+			"url": "/rest/encuesta/"+id, 
+
+			"username": Cookies.get('email'),
+			"password": Cookies.get('password'),
+
+			"success": function (responseData) {
+				$("#listaEncuestas").remove();//Eliminar la lista de encuestas
+				Encuesta.editEncuestaView(responseData);
+				return true;
+			},
+			"error": function(xhr, status, error) {
+				MSG.MSGView($("#msg"), xhr.responseText, "warning");
+				return null;
+			}
+		}
+	);
+},
+
+editEncuestaView: function(encuestaData) {
+	var domElement = $("main");
+	console.log(encuestaData);
+	$.get('/Templates/encuesta/plantillaEditEncuesta.hbs',function(data)
+	{
+		var template = Handlebars.compile(data);
+		var context = {nombreEncuesta: encuestaData.nombre, linkEncuesta: encuestaData.id};
+		var html = template(context);
+		domElement.append(html);
+	});
+
+	$.get('/Templates/encuesta/fechaView.hbs',function(data)
+	{
+		encuestaData.fechas.forEach(function(item) {
+			var template = Handlebars.compile(data);
+			var context = {idEncuesta:encuestaData.id, idFecha: item.fecha, fecha:item.fecha};
+			var html = template(context);
+			var divFechas = $("#tablasFechas");
+			divFechas.append(html);
+
+			$("#delete"+encuestaData.id+item.fecha).click(function()
+			{
+				Encuesta.deleteFecha(encuestaData.id, item.fecha);
+			}
+			);
+
+			var idFecha = item.fecha;
+
+			$.get('/Templates/encuesta/horaView.hbs', function(data)
+			{
+				console.log(item);
+				item.horas.forEach(function(item)
+				{
+					console.log(item);
+					var template = Handlebars.compile(data);
+					var context = {horaInicio: item.horaInicio, horaFin: item.horaFin};
+					var html = template(context);
+					var elemento = $("#fecha"+idFecha);
+					elemento.append(html);
+				}
+				);
+				$.get('/Templates/encuesta/newHoraView.hbs',function(data)
+				{
+					var template = Handlebars.compile(data);
+					var html = template();
+					var elemento = $("#fecha"+idFecha);
+					elemento.append(html);
+				}
+				);
+			}
+			)
+		});
+	}
+	
+	);
+},
+
+deleteFecha: function(idEncuesta, idFecha)
+{
+	$.ajax(
+		{
+			"method": "DELETE",
+			"url": "/rest/encuesta/"+idEncuesta+"/"+idFecha, 
+
+			"username": Cookies.get('email'),
+			"password": Cookies.get('password'),
+			
+			"success": function (responseData) {
+				$("#fecha"+idFecha).remove();
+				return true;
+			},
+			"error": function(xhr, status, error) {
+				MSG.MSGView($("#msg"), xhr.responseText, "warning");
+				return true;
+			}
+		}
+	);
+
 }
 
 }

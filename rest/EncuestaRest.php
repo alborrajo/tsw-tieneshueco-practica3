@@ -88,7 +88,7 @@ class EncuestaRest extends BaseRest {
             try {
                 (new EncuestaModel())->addFecha($id, $data->fecha);
 
-                header($_SERVER['SERVER_PROTOCOL'].' 201 Created');
+                header($_SERVER['SERVER_PROTOCOL'].' 200 OK');
             } catch(MSGException $e) {
                 http_response_code(404);
                 header('Content-Type: application/json');
@@ -107,7 +107,7 @@ class EncuestaRest extends BaseRest {
             try {
                 (new EncuestaModel())->delFecha($id, $fecha);
 
-                header($_SERVER['SERVER_PROTOCOL'].' 201 Created');
+                header($_SERVER['SERVER_PROTOCOL'].' 200 OK');
             } catch(MSGException $e) {
                 http_response_code(404);
                 header('Content-Type: application/json');
@@ -125,7 +125,7 @@ class EncuestaRest extends BaseRest {
             try {
                 (new EncuestaModel())->addHora($id, $fecha, $data->horaInicio, $data->horaFin);
 
-                header($_SERVER['SERVER_PROTOCOL'].' 201 Created');
+                header($_SERVER['SERVER_PROTOCOL'].' 200 OK');
             } catch(MSGException $e) {
                 http_response_code(404);
                 header('Content-Type: application/json');
@@ -149,7 +149,7 @@ class EncuestaRest extends BaseRest {
             try
             {
                 (new EncuestaModel())->delHora($id, $fecha, $horaInicio, $horaFin);
-                http_response_code(201);
+                http_response_code(200);
                 exit;
             }
             catch(MSGException $e)
@@ -180,7 +180,7 @@ class EncuestaRest extends BaseRest {
                 (new EncuestaModel())->addVoto($id, 
                 $_SERVER['PHP_AUTH_USER'], $fecha,$horaInicio,$horaFin);
     
-                http_response_code(201);
+                http_response_code(200);
                 exit;
             }
             catch(MSGException $e)
@@ -210,7 +210,7 @@ class EncuestaRest extends BaseRest {
                 (new EncuestaModel())->delVoto($id, 
                 $_SERVER['PHP_AUTH_USER'], $fecha,$horaInicio,$horaFin);
     
-                http_response_code(201);
+                http_response_code(200);
                 exit;
             }
             catch(MSGException $e)

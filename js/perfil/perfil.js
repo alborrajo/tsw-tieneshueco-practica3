@@ -21,6 +21,10 @@ Perfil = {
 			var template=Handlebars.compile(data);
 			domElement.append(template(encuestaData));
 
+			$("#edit"+encuestaData.id).click(function(){
+				Encuesta.editEncuesta(encuestaData.id);
+			});
+
 			$("#delete"+encuestaData.id).click(function() {
 				Encuesta.deleteEncuesta(encuestaData.id);
 			});
