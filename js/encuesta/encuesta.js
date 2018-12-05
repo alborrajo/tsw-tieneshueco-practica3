@@ -80,6 +80,11 @@ editEncuestaView: function(encuestaData) {
 		var context = {nombreEncuesta: encuestaData.nombre, linkEncuesta: encuestaData.id};
 		var html = template(context);
 		domElement.append(html);
+
+		$("#addDateForm"+encuestaData.id).submit(function() {
+				Encuesta.addFecha(encuestaData.id,ConvertFormToJSON($("#addDateForm"+encuestaData.id)))
+				return false; // Que no envie el formulario
+			})
 	});
 
 	$.get('/Templates/encuesta/fechaView.hbs',function(data)
@@ -140,6 +145,35 @@ deleteFecha: function(idEncuesta, idFecha)
 			
 			"success": function (responseData) {
 				$("#fecha"+idFecha).remove();
+				return true;
+			},
+			"error": function(xhr, status, error) {
+				MSG.MSGView($("#msg"), xhr.responseText, "warning");
+				return true;
+			}
+		}
+	);
+
+},
+
+addFecha: function(idEncuesta, Fecha)
+{
+	$.ajax(
+		{
+			"method": "POST",
+			"url": "/rest/encuesta/"+idEncuesta, 
+
+			"username": Cookies.get('email'),
+			"password": Cookies.get('password'),
+
+			// POSTear JSON a pelo
+			'dataType': 'json',
+			'processData': false,
+			'contentType': 'application/json',
+			"data": JSON.stringify(Fecha),
+			
+			"success": function (responseData) {
+				Encuesta.editEncuestaView(responseData);
 				return true;
 			},
 			"error": function(xhr, status, error) {
