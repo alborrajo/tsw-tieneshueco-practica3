@@ -3,7 +3,9 @@ class Hora implements JsonSerializable {
 	private $horaInicio;
 	private $horaFin;
 
-	function __construct( $horaInicio, $horaFin)
+	public $votos;
+
+	function __construct($horaInicio, $horaFin)
 	{
 	$this->horaInicio = $horaInicio;
 	$this->horaFin = $horaFin;
@@ -17,10 +19,15 @@ class Hora implements JsonSerializable {
 		return $this->horaFin;
 	}
 
+	function getVotos() {
+		return $this->votos;
+	}
+
 	public function jsonSerialize() {
         return [
             'horaInicio' => $this->getHoraInicio(),
-            'horaFin' => $this->getHoraFin()
+			'horaFin' => $this->getHoraFin(),
+			'votos' => $this->getVotos()
         ];
     }
 }

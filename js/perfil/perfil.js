@@ -5,33 +5,45 @@ Perfil = {
 			var template=Handlebars.compile(data);
 			domElement.html(template());
 
-			userData.encuestas.forEach(function(item) {
-				Perfil.encuestaView($("#encuestas"), item);
-			});
-			userData.encuestasCompartidas.forEach(function(item) {
-				Perfil.encuestaCompartidaView($("#encuestasCompartidas"), item);
-			});
+			// Si hay encuestas
+			if(userData.encuestas && userData.encuestas.length) {
+				$.get('/Templates/perfil/encuesta.hbs', function (data) {
+					// Cargar plantilla
+					var template=Handlebars.compile(data);
+
+					// Aplicarla por cada encuesta
+					userData.encuestas.forEach(function(item) {
+						Perfil.encuestaView(template, $("#encuestas"), item);
+					});
+				});
+			}
+			
+			//Si hay encuestas compartidas
+			if(userData.encuestasCompartidas && userData.encuestasCompartidas.length) {
+				$.get('/Templates/perfil/encuestaCompartida.hbs', function (data) {
+					// Cargar plantilla
+					var template=Handlebars.compile(data);
+
+					// Aplicarla por cada encuesta compartida
+					userData.encuestasCompartidas.forEach(function(item) {
+						Perfil.encuestaCompartidaView(template, $("#encuestasCompartidas"), item);
+					});
+				});
+			}
 
 		});
 	},
 
-	encuestaView: function(domElement, encuestaData) {
-		console.log(encuestaData);
-		$.get('/Templates/perfil/encuesta.hbs', function (data) {
-			var template=Handlebars.compile(data);
-			domElement.append(template(encuestaData));
-
-			$("#delete"+encuestaData.id).click(function() {
-				Encuesta.deleteEncuesta(encuestaData.id);
-			});
+	encuestaView: function(template, domElement, encuestaData) {
+		domElement.append(template(encuestaData));
+		
+		$("#delete"+encuestaData.id).click(function() {
+			Encuesta.deleteEncuesta(encuestaData.id);
 		});
 	},
 
-	encuestaCompartidaView: function(domElement, encuestaData) {
-		$.get('/Templates/perfil/encuestaCompartida.hbs', function (data) {
-			var template=Handlebars.compile(data);
-			domElement.append(template(encuestaData));
-		});
+	encuestaCompartidaView: function(template, domElement, encuestaData) {
+		domElement.append(template(encuestaData));
 	}
 
 }

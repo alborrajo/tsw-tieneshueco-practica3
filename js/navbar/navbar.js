@@ -1,6 +1,6 @@
 Navbar = {
 
-	navbarView: function(domElement, logeado) {
+	navbarView: function(domElement) {
 		// Cargar navbar
 		$.get('/Templates/navbar/navbar.hbs', function (data) {
 			var template=Handlebars.compile(data);
@@ -10,9 +10,6 @@ Navbar = {
 			$(".btn-locale").click(function() {
 				setLocale( $(this).attr('id') ); // Set clicked button ID as locale
 			});
-
-			// Si está logeado, mostrar botones de logeado en la navbar
-			if(logeado) {this.navbarLoggedButtonsView($("#loggedButtons"));}
 
 		}, 'html');
 	},

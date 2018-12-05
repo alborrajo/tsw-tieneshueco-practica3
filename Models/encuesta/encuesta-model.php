@@ -19,7 +19,7 @@ class EncuestaModel {
         }
         catch (PDOException $e) {
             //Si no se hace así, se mostrarían todos los datos de la conexión, INCLUYENDO USER Y PASS DE LA BD
-            throw new MSGException($strings["DBConnectionError"],"danger");
+            throw new MSGException("DBConnectionError","danger");
         }
     }
 
@@ -32,7 +32,7 @@ class EncuestaModel {
             if(!$stmt->execute()) {throw new PDOException();}
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["DateAddError"],"danger");    
+            throw new MSGException("DateAddError","danger");    
         }
     }
 
@@ -47,7 +47,7 @@ class EncuestaModel {
             if(!$stmt->execute()) {throw new PDOException();}
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["HourAddError"],"danger");    
+            throw new MSGException("HourAddError","danger");    
         }
     }
 
@@ -60,7 +60,7 @@ class EncuestaModel {
             if(!$stmt->execute()) {throw new PDOException();}
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["DateDeleteError"],"danger");    
+            throw new MSGException("DateDeleteError","danger");    
         }
     }
 
@@ -75,7 +75,7 @@ class EncuestaModel {
             if(!$stmt->execute()) {throw new PDOException();}
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["HourDeleteError"],"danger");    
+            throw new MSGException("HourDeleteError","danger");    
         }
     }    
 
@@ -113,7 +113,11 @@ class EncuestaModel {
                 //Por cada Hora encontrada, añadir al array un nuevo objeto con los datos encontrados
                 foreach($fechas as $fecha) {
                     if($fecha->getFecha() == $hora["FECHA"]) {
-                        $fecha->horas[] = new Hora($hora["HORAINICIO"],$hora["HORAFIN"]);
+                        $tmpHora = new Hora($hora["HORAINICIO"],$hora["HORAFIN"]);
+
+                        $tmpHora->votos = $this->getVotosOnHora($id, $fecha->getFecha(), $tmpHora->getHoraInicio(), $tmpHora->getHoraFin());
+
+                        $fecha->horas[] = $tmpHora;
                     }
                 }
             }
@@ -123,7 +127,7 @@ class EncuestaModel {
             return $toReturn;
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["EncuestaGetError"],"danger");    
+            throw new MSGException("EncuestaGetError","danger");    
         }
     }
 
@@ -144,7 +148,30 @@ class EncuestaModel {
             return $toReturn;
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["VotosGetError"],"danger");    
+            throw new MSGException("Error getting votes","danger");    
+        }
+    }
+
+    function getVotosOnHora($idEncuesta, $fecha, $horaInicio, $horaFin) {
+        try {
+            $toReturn = array();
+
+            $stmt = $this->dbh->prepare("SELECT CORREOUSUARIO FROM VOTA WHERE IDENCUESTA = :id AND FECHA = :fecha AND HORAINICIO = :horaInicio AND HORAFIN = :horaFin");
+            $stmt->bindParam(":id", $idEncuesta);
+            $stmt->bindParam(":fecha", $fecha);
+            $stmt->bindParam(":horaInicio", $horaInicio);
+            $stmt->bindParam(":horaFin", $horaFin);
+
+            if(!$stmt->execute()) {throw new PDOException();}
+
+            foreach($stmt->fetchAll() as $voto) {
+                $toReturn[] = $voto["CORREOUSUARIO"];
+            }
+            
+            return $toReturn;
+        }
+        catch (PDOException $e) {
+            throw new MSGException("Error getting votes","danger");    
         }
     }
 
@@ -161,7 +188,7 @@ class EncuestaModel {
             if(!$stmt->execute()) {throw new PDOException();}
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["VotoAddError"],"danger");    
+            throw new MSGException("VotoAddError","danger");    
         }
 
     }
@@ -181,7 +208,7 @@ class EncuestaModel {
             if(!$stmt->execute()) {throw new PDOException();}
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["VotoDeleteError"],"danger");    
+            throw new MSGException("VotoDeleteError","danger");    
         }
 
     }

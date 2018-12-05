@@ -1,5 +1,8 @@
 Login = {
 
+email: undefined,
+password: undefined,
+
 // Crear vista de LOGIN
 loginForm: function(domElement) {
 	// Cargar plantilla de Login
@@ -10,9 +13,8 @@ loginForm: function(domElement) {
 		// Acción a realizar al pulsar el botón de login
 		$("#formularioLogin").submit(
 			function(eventObject) {
-				//alert(JSON.stringify(ConvertFormToJSON($("#formularioLogin"))));
 				formJSON = ConvertFormToJSON($("#formularioLogin"));
-				Login.login(formJSON.email, formJSON.password); // Enviar datos a la API por POST
+				Login.login(formJSON.email, formJSON.password, Login.loginSuccessCallback, Login.loginErrorCallback); // Enviar datos a la API por POST
 
 				return false; // No hacer submit
 			}
@@ -28,28 +30,35 @@ loginForm: function(domElement) {
 
 
 // Funcion para iniciar sesión
-login: function(email, password) {
+login: function(email, password, callback, errorCallback) {
+	Login.email = email;
+	Login.password = password;
+
 	$.ajax(
 		{
 			"username": email,
 			"password": password,
 			"url": "/rest/usuario/"+email,
 
-			"success": function(data) {
-				Cookies.set('email',email);
-				Cookies.set('password',password);
-
-				Navbar.navbarLoggedButtonsView($("#loggedButtons"));
-				Perfil.perfilView($("main"), data);
-				return data; // Retornar datos obtenidos de la BD
-			},
-			"error": function(xhr,status,error) {
-				MSG.MSGView($("#msg"), xhr.responseText, "warning");
-				return null;
-			}
+			"success": callback,
+			"error": errorCallback,
 		}
 	)
 },
 
+loginSuccessCallback: function(data) {
+	Cookies.set('email',Login.email);
+	Cookies.set('password',Login.password);
+
+	Navbar.navbarLoggedButtonsView($("#loggedButtons"),true);
+	Perfil.perfilView($("main"), data);
+},
+
+loginErrorCallback: function(xhr, status, error) {
+	Login.email = null;
+	Login.password = null;
+	MSG.MSGView($("#msg"), xhr.responseText, "warning");
+}
+ 
 
 }
