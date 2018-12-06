@@ -18,7 +18,7 @@ function __construct(){
         }
         catch (PDOException $e) {
             //Si no se hace así, se mostrarían todos los datos de la conexión, INCLUYENDO USER Y PASS DE LA BD
-            throw new MSGException($strings["DBConnectionError"],"danger");
+            throw new MSGException("DBConnectionError","danger");
         }
 }
 
@@ -42,7 +42,7 @@ function login($email, $password){
            
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["UserGetError"],"danger");    
+            throw new MSGException("UserGetError","danger");    
         }
 }//fin metodo login
 
@@ -64,7 +64,7 @@ function Register($email){
         }
 	}	
 	catch (PDOException $e) {
-            throw new MSGException($strings["UserGetError"],"danger");    
+            throw new MSGException("UserGetError","danger");    
         }
 		
 
@@ -81,7 +81,7 @@ function registrar($email, $password, $nombre){
             if(!$stmt->execute()) {throw new PDOException();}
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["UserRegisterError"],"danger");    
+            throw new MSGException("UserRegisterError","danger");    
         }
 }
 
