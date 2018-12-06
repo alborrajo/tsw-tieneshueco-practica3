@@ -330,12 +330,14 @@ editEncuestaView: function(encuestaData) {
 	$.get('/Templates/encuesta/plantillaEditEncuesta.hbs',function(data)
 	{
 		var template = Handlebars.compile(data);
-		var context = {nombreEncuesta: encuestaData.nombre, linkEncuesta: encuestaData.id};
+		var context = {idEncuesta: encuestaData.id,nombreEncuesta: encuestaData.nombre, linkEncuesta: encuestaData.id};
 		var html = template(context);
 		domElement.append(html);
 
-		$("#addDateForm"+encuestaData.id).submit(function() {
-				Encuesta.addFecha(encuestaData.id,ConvertFormToJSON($("#addDateForm"+encuestaData.id)))
+
+
+		$("#addDateForm"+encuestaData.id).click(function() {
+				Encuesta.addFecha(encuestaData.id,ConvertFormToJSON($("#formFecha")))
 				return false; // Que no envie el formulario
 			})
 	});
@@ -377,11 +379,15 @@ editEncuestaView: function(encuestaData) {
 						var template = Handlebars.compile(data);
 						var context = {horaInicio: item.horaInicio, horaFin: item.horaFin};
 						var html = template(context);
-						var elemento = $("#fecha"+idFecha);
+						var elemento = $("#horas"+idFecha);
 						elemento.append(html);
 					}
 					);
-					$.get('/Templates/encuesta/newHoraView.hbs',function(data)
+					
+				}
+				)
+			});
+			$.get('/Templates/encuesta/newHoraView.hbs',function(data)
 					{
 						var template = Handlebars.compile(data);
 						var html = template();
@@ -389,9 +395,6 @@ editEncuestaView: function(encuestaData) {
 						elemento.append(html);
 					}
 					);
-				}
-				)
-			});
 		});
 	}
 	
@@ -421,6 +424,7 @@ deleteFecha: function(idEncuesta, idFecha)
 
 addFecha: function(idEncuesta, Fecha)
 {
+	console.log(idEncuesta+Fecha.fecha);
 	$.ajax(
 		{
 			"method": "POST",
