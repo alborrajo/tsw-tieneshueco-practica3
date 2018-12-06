@@ -14,7 +14,7 @@ class PerfilModel {
         }
         catch (PDOException $e) {
             //Si no se hace así, se mostrarían todos los datos de la conexión, INCLUYENDO USER Y PASS DE LA BD
-            throw new MSGException($strings["DBConnectionError"],"danger");
+            throw new MSGException("DBConnectionError","danger");
         }
     }
 
@@ -35,7 +35,7 @@ class PerfilModel {
             return $id;
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["EncuestaAddError"],"danger");    
+            throw new MSGException("EncuestaAddError","danger");    
         }
     }
 
@@ -52,7 +52,7 @@ class PerfilModel {
             return $stmt->fetch()["PROPIETARIO"];
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["EncuestaGetError"],"danger");    
+            throw new MSGException("EncuestaGetError","danger");    
         }
     }
 
@@ -67,7 +67,7 @@ class PerfilModel {
             
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["EncuestaDeleteError"],"danger");    
+            throw new MSGException("EncuestaDeleteError","danger");    
         }
     }
 
@@ -101,7 +101,7 @@ class PerfilModel {
             return $toReturn;
         }
         catch (PDOException $e) {
-            throw new MSGException($strings["EncuestasGetError"],"danger");    
+            throw new MSGException("EncuestasGetError","danger");    
         }
     }
 
