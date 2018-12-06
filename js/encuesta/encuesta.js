@@ -334,10 +334,10 @@ editEncuestaView: function(encuestaData) {
 		var html = template(context);
 		domElement.append(html);
 
-
-
 		$("#addDateForm"+encuestaData.id).click(function() {
-				Encuesta.addFecha(encuestaData.id,ConvertFormToJSON($("#formFecha")))
+				var formJSON = ConvertFormToJSON($("#formFecha"));
+				Encuesta.addFecha(encuestaData.id,ConvertFormToJSON($("#formFecha")));
+				Encuesta.actualizarFechas(encuestaData,formJSON);
 				return false; // Que no envie el formulario
 			})
 	});
@@ -450,6 +450,37 @@ addFecha: function(idEncuesta, Fecha)
 		}
 	);
 
+},
+
+actualizarFechas: function(encuestaData, formJSON)
+{
+
+	$.get('/Templates/encuesta/fechaView.hbs',function(data)
+	{
+			var template = Handlebars.compile(data);
+			var context = {idEncuesta:encuestaData.id, idFecha: formJSON.fecha, fecha:formJSON.fecha};
+			var html = template(context);
+			var divFechas = $("#tablasFechas");
+			divFechas.append(html);
+
+			$("#delete"+encuestaData.id+formJSON.fecha).click(function()
+			{
+				Encuesta.deleteFecha(encuestaData.id, formJSON.fecha);
+			}
+			);
+	});
+
+	$.get('/Templates/encuesta/newHoraView.hbs',function(data)
+		{
+			var template = Handlebars.compile(data);
+			var html = template();
+			var elemento = $("#fecha"+formJSON.fecha);
+			elemento.append(html);
+		}
+			);
+
 }
+
+
 
 }
