@@ -333,17 +333,34 @@ editEncuestaView: function(encuestaData) {
 		var context = {nombreEncuesta: encuestaData.nombre, linkEncuesta: encuestaData.id};
 		var html = template(context);
 		domElement.append(html);
-	
-		$.get('/Templates/encuesta/fechaView.hbs',function(data)
-		{
-			encuestaData.fechas.forEach(function(item) {
-				var template = Handlebars.compile(data);
-				var context = {idEncuesta:encuestaData.id, idFecha: item.fecha, fecha:item.fecha};
-				var html = template(context);
-				var divFechas = $("#tablasFechas");
-				divFechas.append(html);
-	
-				$("#delete"+encuestaData.id+item.fecha).click(function()
+
+		$("#addDateForm"+encuestaData.id).submit(function() {
+				Encuesta.addFecha(encuestaData.id,ConvertFormToJSON($("#addDateForm"+encuestaData.id)))
+				return false; // Que no envie el formulario
+			})
+	});
+
+	$.get('/Templates/encuesta/fechaView.hbs',function(data)
+	{
+		encuestaData.fechas.forEach(function(item) {
+			var template = Handlebars.compile(data);
+			var context = {idEncuesta:encuestaData.id, idFecha: item.fecha, fecha:item.fecha};
+			var html = template(context);
+			var divFechas = $("#tablasFechas");
+			divFechas.append(html);
+
+			$("#delete"+encuestaData.id+item.fecha).click(function()
+			{
+				Encuesta.deleteFecha(encuestaData.id, item.fecha);
+			}
+			);
+
+			var idFecha = item.fecha;
+
+			$.get('/Templates/encuesta/horaView.hbs', function(data)
+			{
+				console.log(item);
+				item.horas.forEach(function(item)
 				{
 					Encuesta.deleteFecha(encuestaData.id, item.fecha);
 				}
@@ -393,6 +410,33 @@ deleteFecha: function(idEncuesta, idFecha)
 			
 			"success": function (responseData) {
 				$("#fecha"+idFecha).remove();
+			},
+			"error": function(xhr, status, error) {
+				MSG.MSGView($("#msg"), xhr.responseText, "warning");
+			}
+		}
+	);
+
+},
+
+addFecha: function(idEncuesta, Fecha)
+{
+	$.ajax(
+		{
+			"method": "POST",
+			"url": "/rest/encuesta/"+idEncuesta, 
+
+			"username": Cookies.get('email'),
+			"password": Cookies.get('password'),
+
+			// POSTear JSON a pelo
+			'dataType': 'json',
+			'processData': false,
+			'contentType': 'application/json',
+			"data": JSON.stringify(Fecha),
+			
+			"success": function (responseData) {
+				Encuesta.editEncuestaView(responseData);
 				return true;
 			},
 			"error": function(xhr, status, error) {
