@@ -377,10 +377,14 @@ editEncuestaView: function(encuestaData) {
 					{
 						console.log(item);
 						var template = Handlebars.compile(data);
-						var context = {horaInicio: item.horaInicio, horaFin: item.horaFin};
+						var context = {horaInicio: item.horaInicio, horaFin: item.horaFin, idEncuesta: encuestaData.id, idFecha: idFecha};
 						var html = template(context);
 						var elemento = $("#horas"+idFecha);
 						elemento.append(html);
+
+						$("#delete"+encuestaData.id+idFecha+item.horaInicio+item.horaFin).click(function(){
+							Encuesta.deleteHora(encuestaData.id, idFecha, item.horaInicio, item.horaFin );
+						});
 					}
 					);
 					
@@ -390,9 +394,16 @@ editEncuestaView: function(encuestaData) {
 			$.get('/Templates/encuesta/newHoraView.hbs',function(data)
 					{
 						var template = Handlebars.compile(data);
-						var html = template();
+						var context = {idEncuesta: encuestaData.id, idFecha: idFecha};
+						var html = template(context);
 						var elemento = $("#fecha"+idFecha);
 						elemento.append(html);
+
+						$("#add"+encuestaData.id+idFecha).click(function() {
+							var formJSON = ConvertFormToJSON($("#formhora"));
+							Encuesta.addHora(encuestaData.id,idFecha,formJSON);
+							return false; // Que no envie el formulario
+						})
 					}
 					);
 		});
@@ -478,6 +489,56 @@ actualizarFechas: function(encuestaData, formJSON)
 			elemento.append(html);
 		}
 			);
+
+},
+
+deleteHora: function(idEncuesta, idFecha, horaInicio, horaFin)
+{
+	$.ajax(
+		{
+			"method": "DELETE",
+			"url": "/rest/encuesta/"+idEncuesta+"/"+idFecha+"/"+horaInicio+"/"+horaFin, 
+
+			"username": Cookies.get('email'),
+			"password": Cookies.get('password'),
+			
+			"success": function (responseData) {
+				$("#hora"+idFecha+horaInicio+horaFin).remove();
+			},
+			"error": function(xhr, status, error) {
+				MSG.MSGView($("#msg"), xhr.responseText, "warning");
+			}
+		}
+	);
+
+},
+
+addHora: function(idEncuesta, idFecha, formJSON)
+{
+	$.ajax(
+		{
+			"method": "POST",
+			"url": "/rest/encuesta/"+idEncuesta+"/"+idFecha, 
+
+			"username": Cookies.get('email'),
+			"password": Cookies.get('password'),
+
+			// POSTear JSON a pelo
+			'dataType': 'json',
+			'processData': false,
+			'contentType': 'application/json',
+			"data": JSON.stringify(formJSON),
+			
+			"success": function (responseData) {
+				Encuesta.editEncuestaView(responseData);
+				return true;
+			},
+			"error": function(xhr, status, error) {
+				MSG.MSGView($("#msg"), xhr.responseText, "warning");
+				return true;
+			}
+		}
+	);
 
 }
 
