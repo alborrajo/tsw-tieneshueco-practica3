@@ -9,12 +9,12 @@
 
 <div>
    <h3>Nueva fecha</h3>
-<form id="formFecha">
+<form id="addDateForm">
     <input type="date" name="fecha">
-    <button id="addDateForm{{idEncuesta}}" type="button" class="btn btn-primary btn-sm"><span class="fas fa-plus-circle"></span></button>
+    <button type="submit" class="btn btn-primary btn-sm"><span class="fas fa-plus-circle"></span></button>
 </form>
 <h2>
     Difunde tu encuesta compartiendo el siguiente link
 </h2>
 
-<input type="text" readonly="readonly" size="50" value="localhost/#{{linkEncuesta}}">
+<input type="text" readonly="readonly" size="50" value="localhost/#{{idEncuesta}}">

@@ -330,13 +330,13 @@ editEncuestaView: function(encuestaData) {
 	$.get('/Templates/encuesta/plantillaEditEncuesta.hbs',function(data)
 	{
 		var template = Handlebars.compile(data);
-		var context = {idEncuesta: encuestaData.id,nombreEncuesta: encuestaData.nombre, linkEncuesta: encuestaData.id};
+		var context = {idEncuesta: encuestaData.id,nombreEncuesta: encuestaData.nombre};
 		var html = template(context);
 		domElement.append(html);
 
-		$("#addDateForm"+encuestaData.id).click(function() {
-				var formJSON = ConvertFormToJSON($("#formFecha"));
-				Encuesta.addFecha(encuestaData.id,ConvertFormToJSON($("#formFecha")));
+		$("#addDateForm").submit(function() {
+				var formJSON = ConvertFormToJSON($("#addDateForm"));
+				Encuesta.addFecha(encuestaData.id,ConvertFormToJSON($("#addDateForm")));
 				Encuesta.actualizarFechas(encuestaData,formJSON);
 				return false; // Que no envie el formulario
 			})
@@ -346,7 +346,7 @@ editEncuestaView: function(encuestaData) {
 	{
 		encuestaData.fechas.forEach(function(item) {
 			var template = Handlebars.compile(data);
-			var context = {idEncuesta:encuestaData.id, idFecha: item.fecha, fecha:item.fecha};
+			var context = {idEncuesta: encuestaData.id, idFecha: item.fecha, fecha:item.fecha};
 			var html = template(context);
 			var divFechas = $("#tablasFechas");
 			divFechas.append(html);
@@ -362,31 +362,33 @@ editEncuestaView: function(encuestaData) {
 			$.get('/Templates/encuesta/horaView.hbs', function(data)
 			{
 				console.log(item);
-				item.horas.forEach(function(item)
-				{
-					Encuesta.deleteFecha(encuestaData.id, item.fecha);
-				}
-				);
+				// Quien ha puesto esto???
+				/*if(item.horas && item.horas.length) {
+					item.horas.forEach(function(item) {
+						Encuesta.deleteFecha(encuestaData.id, item.fecha);
+					});
+				}*/
 	
 				var idFecha = item.fecha;
 	
 				$.get('/Templates/encuesta/horaView.hbs', function(data)
 				{
 					console.log(item);
-					item.horas.forEach(function(item)
-					{
-						console.log(item);
-						var template = Handlebars.compile(data);
-						var context = {horaInicio: item.horaInicio, horaFin: item.horaFin, idEncuesta: encuestaData.id, idFecha: idFecha};
-						var html = template(context);
-						var elemento = $("#horas"+idFecha);
-						elemento.append(html);
+					if(item.horas && item.horas.length) {
+						item.horas.forEach(function(item) {
+							console.log(item);
+							var template = Handlebars.compile(data);
+							var context = {horaInicio: item.horaInicio, horaFin: item.horaFin, idEncuesta: encuestaData.id, idFecha: idFecha};
+							var html = template(context);
+							var elemento = $("#horas"+idFecha);
+							elemento.append(html);
 
-						$("#delete"+encuestaData.id+idFecha+item.horaInicio+item.horaFin).click(function(){
-							Encuesta.deleteHora(encuestaData.id, idFecha, item.horaInicio, item.horaFin );
+							$("#delete"+$.escapeSelector(encuestaData.id+idFecha+item.horaInicio+item.horaFin)).submit(function(){
+								Encuesta.deleteHora(encuestaData.id, idFecha, item.horaInicio, item.horaFin );
+								return false;
+							});
 						});
 					}
-					);
 					
 				}
 				)
@@ -399,8 +401,8 @@ editEncuestaView: function(encuestaData) {
 						var elemento = $("#fecha"+idFecha);
 						elemento.append(html);
 
-						$("#add"+encuestaData.id+idFecha).click(function() {
-							var formJSON = ConvertFormToJSON($("#formhora"));
+						$("#add"+$.escapeSelector(encuestaData.id+idFecha)).submit(function() {
+							var formJSON = ConvertFormToJSON($("#add"+$.escapeSelector(encuestaData.id+idFecha)));
 							Encuesta.addHora(encuestaData.id,idFecha,formJSON);
 							return false; // Que no envie el formulario
 						})
@@ -433,9 +435,9 @@ deleteFecha: function(idEncuesta, idFecha)
 
 },
 
-addFecha: function(idEncuesta, Fecha)
+addFecha: function(idEncuesta, fecha)
 {
-	console.log(idEncuesta+Fecha.fecha);
+	console.log(idEncuesta+fecha.fecha);
 	$.ajax(
 		{
 			"method": "POST",
@@ -445,18 +447,16 @@ addFecha: function(idEncuesta, Fecha)
 			"password": Cookies.get('password'),
 
 			// POSTear JSON a pelo
-			'dataType': 'json',
 			'processData': false,
 			'contentType': 'application/json',
-			"data": JSON.stringify(Fecha),
+			"data": JSON.stringify(fecha),
 			
 			"success": function (responseData) {
-				Encuesta.editEncuestaView(responseData);
-				return true;
+				Encuesta.actualizarFechas(encuestaData,fecha);
 			},
 			"error": function(xhr, status, error) {
+				console.log(xhr+"\t"+status+"\t"+error);
 				MSG.MSGView($("#msg"), xhr.responseText, "warning");
-				return true;
 			}
 		}
 	);
@@ -503,7 +503,7 @@ deleteHora: function(idEncuesta, idFecha, horaInicio, horaFin)
 			"password": Cookies.get('password'),
 			
 			"success": function (responseData) {
-				$("#hora"+idFecha+horaInicio+horaFin).remove();
+				$("#hora"+$.escapeSelector(idFecha+horaInicio+horaFin)).remove();
 			},
 			"error": function(xhr, status, error) {
 				MSG.MSGView($("#msg"), xhr.responseText, "warning");
@@ -524,18 +524,30 @@ addHora: function(idEncuesta, idFecha, formJSON)
 			"password": Cookies.get('password'),
 
 			// POSTear JSON a pelo
-			'dataType': 'json',
 			'processData': false,
 			'contentType': 'application/json',
 			"data": JSON.stringify(formJSON),
 			
 			"success": function (responseData) {
-				Encuesta.editEncuestaView(responseData);
-				return true;
+				$.get('/Templates/encuesta/horaView.hbs', function(data) {
+
+					var template = Handlebars.compile(data);
+					var context = {horaInicio: formJSON.horaInicio+":00", horaFin: formJSON.horaFin+":00", idEncuesta: idEncuesta, idFecha: idFecha};
+					console.log(JSON.stringify(context));
+					var html = template(context);
+					var elemento = $("#horas"+idFecha);
+					elemento.append(html);
+
+					$("#delete"+$.escapeSelector(idEncuesta+idFecha+formJSON.horaInicio+":00"+formJSON.horaFin+":00")).submit(function(){
+						Encuesta.deleteHora(idEncuesta, idFecha, formJSON.horaInicio+":00", formJSON.horaFin+":00" );
+						return false;
+					});
+				});
+
 			},
 			"error": function(xhr, status, error) {
 				MSG.MSGView($("#msg"), xhr.responseText, "warning");
-				return true;
+				console.log(xhr+"\t"+status+"\t"+error);
 			}
 		}
 	);
