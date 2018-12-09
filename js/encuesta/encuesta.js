@@ -56,7 +56,7 @@ voteEncuesta: function(formJSON) {
 
 			"success": function (responseData) {
 				var formId = md5(Login.email+formJSON.fecha+formJSON.horaInicio+formJSON.horaFin);
-				
+
 				$.get("/Templates/encuesta/trUsuario/tdUnvote.hbs", function(tdUnvoteTemplateData) {
 					var tdUnvoteTemplate = Handlebars.compile(tdUnvoteTemplateData);
 
@@ -175,8 +175,13 @@ participarEncuestaView: function(domElement, encuestaData) {
 
 				// Por cada fecha añadir casilla con la fecha
 				encuestaData.fechas.forEach(function(fecha) {
+
+					//Calcular colSpan, 1 si la fecha no tiene horas
+					var colSpan = 1;
+					if(fecha.horas && fecha.horas.length) {colSpan = fecha.horas.length;}
+
 					$("#dates").append(thTemplate({
-						"colSpan": fecha.horas.length,
+						"colSpan": colSpan,
 						"text": fecha.fecha
 					}));
 
@@ -223,32 +228,88 @@ participarEncuestaView: function(domElement, encuestaData) {
 
 								// Si es el usuario logeado
 								if(usuario == Login.email) {
-									encuestaData.fechas.forEach(function (fecha) {
-										fecha.horas.forEach(function (hora) {
-											var formId = md5(usuario+fecha.fecha+hora.horaInicio+hora.horaFin);
+									if(encuestaData.fechas && encuestaData.fechas.length) {
+										encuestaData.fechas.forEach(function (fecha) {
+											if(fecha.horas && fecha.horas.length) {
+												fecha.horas.forEach(function (hora) {
+													var formId = md5(usuario+fecha.fecha+hora.horaInicio+hora.horaFin);
 
-											// Si existe el voto por el usuario en la fecha y la hora
-											if(votosPorUsuario && votosPorUsuario[usuario] && votosPorUsuario[usuario][fecha.fecha] && votosPorUsuario[usuario][fecha.fecha][hora.horaInicio+" - "+hora.horaFin]) {
-												$("#"+$.escapeSelector(usuario)).append(tdUnvoteTemplate({
-													"formId":formId,
-													"id": encuestaData.id,
-													"fecha": fecha.fecha,
-													"horaInicio": hora.horaInicio,
-													"horaFin": hora.horaFin
-												}));
+													// Si existe el voto por el usuario en la fecha y la hora
+													if(votosPorUsuario && votosPorUsuario[usuario] && votosPorUsuario[usuario][fecha.fecha] && votosPorUsuario[usuario][fecha.fecha][hora.horaInicio+" - "+hora.horaFin]) {
+														$("#"+$.escapeSelector(usuario)).append(tdUnvoteTemplate({
+															"formId":formId,
+															"id": encuestaData.id,
+															"fecha": fecha.fecha,
+															"horaInicio": hora.horaInicio,
+															"horaFin": hora.horaFin
+														}));
 
-												// Acción a realizar al pulsar el botón
-												$("#form"+formId).submit(
-													function(eventObject) {
-														formJSON = ConvertFormToJSON($("#form"+formId));
-														Encuesta.unvoteEncuesta(formJSON);
+														// Acción a realizar al pulsar el botón
+														$("#form"+formId).submit(
+															function(eventObject) {
+																formJSON = ConvertFormToJSON($("#form"+formId));
+																Encuesta.unvoteEncuesta(formJSON);
 
-														return false; // No hacer submit
+																return false; // No hacer submit
+															}
+														);
 													}
-												);
+													else {
+														$("#"+$.escapeSelector(usuario)).append(tdVoteTemplate({
+															"formId":formId,
+															"id": encuestaData.id,
+															"fecha": fecha.fecha,
+															"horaInicio": hora.horaInicio,
+															"horaFin": hora.horaFin
+														}));
+
+														// Acción a realizar al pulsar el botón
+														$("#form"+formId).submit(
+															function(eventObject) {
+																formJSON = ConvertFormToJSON($("#form"+formId));
+																Encuesta.voteEncuesta(formJSON);
+
+																return false; // No hacer submit
+															}
+														);
+													}
+												});
 											}
-											else {
-												$("#"+$.escapeSelector(usuario)).append(tdVoteTemplate({
+										});
+									}
+								}
+								// Si no es el usuario logeado
+								else {
+									if(encuestaData.fechas && encuestaData.fechas.length) {
+										encuestaData.fechas.forEach(function (fecha) {
+											if(fecha.horas && fecha.horas.length) {
+												fecha.horas.forEach(function (hora) {
+													// Si existe el voto por el usuario en la fecha y la hora
+													if(votosPorUsuario && votosPorUsuario[usuario] && votosPorUsuario[usuario][fecha.fecha] && votosPorUsuario[usuario][fecha.fecha][hora.horaInicio+" - "+hora.horaFin]) {
+														$("#"+$.escapeSelector(usuario)).append(tdVotedTemplate());
+													}
+													else {
+														$("#"+$.escapeSelector(usuario)).append(tdEmptyTemplate());
+													}
+												});
+											}
+										});
+									}
+								}
+	
+							}
+
+							//Si no hay tupla para el usuario logeado actual
+							if(Login.email && !votosPorUsuario[Login.email]) {
+								$("#userTuples").append(trUsuarioTemplate({"usuarioVotante": Login.email}));
+								
+								if(encuestaData.fechas && encuestaData.fechas.length) {
+									encuestaData.fechas.forEach(function (fecha) {
+										if(fecha.horas && fecha.horas.length) {
+											fecha.horas.forEach(function (hora) {
+												var formId = md5(Login.email+fecha.fecha+hora.horaInicio+hora.horaFin);
+
+												$("#"+$.escapeSelector(Login.email)).append(tdVoteTemplate({
 													"formId":formId,
 													"id": encuestaData.id,
 													"fecha": fecha.fecha,
@@ -265,54 +326,10 @@ participarEncuestaView: function(domElement, encuestaData) {
 														return false; // No hacer submit
 													}
 												);
-											}
-										});
+											});
+										}
 									});
 								}
-								// Si no es el usuario logeado
-								else {
-									encuestaData.fechas.forEach(function (fecha) {
-										fecha.horas.forEach(function (hora) {
-											// Si existe el voto por el usuario en la fecha y la hora
-											if(votosPorUsuario && votosPorUsuario[usuario] && votosPorUsuario[usuario][fecha.fecha] && votosPorUsuario[usuario][fecha.fecha][hora.horaInicio+" - "+hora.horaFin]) {
-												$("#"+$.escapeSelector(usuario)).append(tdVotedTemplate());
-											}
-											else {
-												$("#"+$.escapeSelector(usuario)).append(tdEmptyTemplate());
-											}
-										});
-									});
-								}
-	
-							}
-
-							//Si no hay tupla para el usuario logeado actual
-							if(Login.email && !votosPorUsuario[Login.email]) {
-								$("#userTuples").append(trUsuarioTemplate({"usuarioVotante": Login.email}));
-								
-								encuestaData.fechas.forEach(function (fecha) {
-									fecha.horas.forEach(function (hora) {
-										var formId = md5(usuario+fecha.fecha+hora.horaInicio+hora.horaFin);
-
-										$("#"+$.escapeSelector(Login.email)).append(tdVoteTemplate({
-											"formId":formId,
-											"id": encuestaData.id,
-											"fecha": fecha.fecha,
-											"horaInicio": hora.horaInicio,
-											"horaFin": hora.horaFin
-										}));
-
-										// Acción a realizar al pulsar el botón
-										$("#form"+formId).submit(
-											function(eventObject) {
-												formJSON = ConvertFormToJSON($("#form"+formId));
-												Encuesta.voteEncuesta(formJSON);
-
-												return false; // No hacer submit
-											}
-										);
-									});
-								});
 							}
 
 						});
