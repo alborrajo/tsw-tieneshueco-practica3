@@ -483,10 +483,18 @@ actualizarFechas: function(encuestaData, formJSON)
 
 	$.get('/Templates/encuesta/newHoraView.hbs',function(data)
 		{
+			var idFecha = formJSON.fecha;
 			var template = Handlebars.compile(data);
-			var html = template();
+			var context = {idEncuesta: encuestaData.id, idFecha: idFecha};
+			var html = template(context);
 			var elemento = $("#fecha"+formJSON.fecha);
 			elemento.append(html);
+
+			$("#add"+$.escapeSelector(encuestaData.id+idFecha)).submit(function() {
+				var formJSON = ConvertFormToJSON($("#add"+$.escapeSelector(encuestaData.id+idFecha)));
+				Encuesta.addHora(encuestaData.id,idFecha,formJSON);
+				return false; // Que no envie el formulario
+			})
 		}
 			);
 
