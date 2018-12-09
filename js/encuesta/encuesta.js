@@ -337,7 +337,7 @@ editEncuestaView: function(encuestaData) {
 		$("#addDateForm").submit(function() {
 				var formJSON = ConvertFormToJSON($("#addDateForm"));
 				Encuesta.addFecha(encuestaData.id,ConvertFormToJSON($("#addDateForm")));
-				Encuesta.actualizarFechas(encuestaData,formJSON);
+				Encuesta.actualizarFechas(encuestaData.id,formJSON.fecha);
 				return false; // Que no envie el formulario
 			})
 	});
@@ -452,7 +452,7 @@ addFecha: function(idEncuesta, fecha)
 			"data": JSON.stringify(fecha),
 			
 			"success": function (responseData) {
-				Encuesta.actualizarFechas(encuestaData,fecha);
+				Encuesta.actualizarFechas(idEncuesta,fecha.fecha);
 			},
 			"error": function(xhr, status, error) {
 				console.log(xhr+"\t"+status+"\t"+error);
@@ -463,36 +463,36 @@ addFecha: function(idEncuesta, fecha)
 
 },
 
-actualizarFechas: function(encuestaData, formJSON)
+actualizarFechas: function(idEncuesta, fecha)
 {
 
 	$.get('/Templates/encuesta/fechaView.hbs',function(data)
 	{
 			var template = Handlebars.compile(data);
-			var context = {idEncuesta:encuestaData.id, idFecha: formJSON.fecha, fecha:formJSON.fecha};
+			var context = {idEncuesta:idEncuesta, idFecha: fecha, fecha:fecha};
 			var html = template(context);
 			var divFechas = $("#tablasFechas");
 			divFechas.append(html);
 
-			$("#delete"+encuestaData.id+formJSON.fecha).click(function()
+			$("#delete"+idEncuesta+fecha).click(function()
 			{
-				Encuesta.deleteFecha(encuestaData.id, formJSON.fecha);
+				Encuesta.deleteFecha(idEncuesta, fecha);
 			}
 			);
 	});
 
 	$.get('/Templates/encuesta/newHoraView.hbs',function(data)
 		{
-			var idFecha = formJSON.fecha;
+			var idFecha = fecha;
 			var template = Handlebars.compile(data);
-			var context = {idEncuesta: encuestaData.id, idFecha: idFecha};
+			var context = {idEncuesta: idEncuesta, idFecha: idFecha};
 			var html = template(context);
-			var elemento = $("#fecha"+formJSON.fecha);
+			var elemento = $("#fecha"+fecha);
 			elemento.append(html);
 
-			$("#add"+$.escapeSelector(encuestaData.id+idFecha)).submit(function() {
-				var formJSON = ConvertFormToJSON($("#add"+$.escapeSelector(encuestaData.id+idFecha)));
-				Encuesta.addHora(encuestaData.id,idFecha,formJSON);
+			$("#add"+$.escapeSelector(idEncuesta+idFecha)).submit(function() {
+				var formJSON = ConvertFormToJSON($("#add"+$.escapeSelector(idEncuesta+idFecha)));
+				Encuesta.addHora(idEncuesta,idFecha,formJSON);
 				return false; // Que no envie el formulario
 			})
 		}
