@@ -101,11 +101,11 @@ class EncuestaRest extends BaseRest {
 		
     }
 
-    public function delFecha($id,$fecha) {
+    public function delFecha($id,$data) {
 		$currentLogged = parent::authenticateUser();
         if ($currentLogged == (new PerfilModel)->getPropietarioEncuesta($id)) {
             try {
-                (new EncuestaModel())->delFecha($id, $fecha);
+                (new EncuestaModel())->delFecha($id, $data->fecha);
 
                 header($_SERVER['SERVER_PROTOCOL'].' 200 OK');
             } catch(MSGException $e) {
@@ -119,11 +119,11 @@ class EncuestaRest extends BaseRest {
         }
     }
 
-    public function addHora($id,$fecha,$data) {
+    public function addHora($id,$data) {
 		$currentLogged = parent::authenticateUser();
         if ($currentLogged == (new PerfilModel)->getPropietarioEncuesta($id)) {
             try {
-                (new EncuestaModel())->addHora($id, $fecha, $data->horaInicio, $data->horaFin);
+                (new EncuestaModel())->addHora($id, $data->fecha, $data->horaInicio, $data->horaFin);
 
                 header($_SERVER['SERVER_PROTOCOL'].' 200 OK');
             } catch(MSGException $e) {
@@ -137,7 +137,7 @@ class EncuestaRest extends BaseRest {
         }
     }
 
-    public function delHora($id,$fecha,$horaInicio, $horaFin) {
+    public function delHora($id,$data) {
 
         $currentLogged = parent::authenticateUser();
         
@@ -148,7 +148,7 @@ class EncuestaRest extends BaseRest {
         {
             try
             {
-                (new EncuestaModel())->delHora($id, $fecha, $horaInicio, $horaFin);
+                (new EncuestaModel())->delHora($id, $data->fecha, $data->horaInicio, $data->horaFin);
                 http_response_code(200);
                 exit;
             }
@@ -169,7 +169,7 @@ class EncuestaRest extends BaseRest {
 		
     }
     
-    public function addVoto($id,$fecha,$horaInicio,$horaFin) {
+    public function addVoto($id,$data) {
 
 
         $currentLogged = parent::authenticateUser();
@@ -178,7 +178,7 @@ class EncuestaRest extends BaseRest {
             try
             {
                 (new EncuestaModel())->addVoto($id, 
-                $_SERVER['PHP_AUTH_USER'], $fecha,$horaInicio,$horaFin);
+                $_SERVER['PHP_AUTH_USER'], $data->fecha,$data->horaInicio,$data->horaFin);
     
                 http_response_code(200);
                 exit;
@@ -198,7 +198,7 @@ class EncuestaRest extends BaseRest {
         
     }
 
-    public function delVoto($id,$fecha,$horaInicio,$horaFin) {
+    public function delVoto($id,$data) {
 
         //URL para pruebas http://localhost/rest/encuesta/20d59b95948b67ce4cadaac4f7934b1a/2018-12-05/12:00:00/14:00:00/voto
 
@@ -208,7 +208,7 @@ class EncuestaRest extends BaseRest {
             try
             {
                 (new EncuestaModel())->delVoto($id, 
-                $_SERVER['PHP_AUTH_USER'], $fecha,$horaInicio,$horaFin);
+                $_SERVER['PHP_AUTH_USER'], $data->fecha,$data->horaInicio,$data->horaFin);
     
                 http_response_code(200);
                 exit;
@@ -236,10 +236,10 @@ URIDispatcher::getInstance()
 ->map("POST", "/encuesta", array($encuestaRest,"nuevaEncuesta"))
 ->map("GET",	"/encuesta/$1", array($encuestaRest,"getEncuesta"))
 ->map("DELETE",	"/encuesta/$1", array($encuestaRest,"delEncuesta"))
-->map("POST",	"/encuesta/$1", array($encuestaRest,"addFecha"))
-->map("DELETE",	"/encuesta/$1/$2", array($encuestaRest,"delFecha"))
-->map("POST",	"/encuesta/$1/$2", array($encuestaRest,"addHora"))
-->map("DELETE",	"/encuesta/$1/$2/$3/$4", array($encuestaRest,"delHora"))
-->map("POST",	"/encuesta/$1/$2/$3/$4/voto", array($encuestaRest,"addVoto"))
-->map("DELETE",	"/encuesta/$1/$2/$3/$4/voto", array($encuestaRest,"delVoto"));
+->map("POST",	"/encuesta/$1/fecha", array($encuestaRest,"addFecha"))
+->map("DELETE",	"/encuesta/$1/fecha", array($encuestaRest,"delFecha"))
+->map("POST",	"/encuesta/$1/hora", array($encuestaRest,"addHora"))
+->map("DELETE",	"/encuesta/$1/hora", array($encuestaRest,"delHora"))
+->map("POST",	"/encuesta/$1/voto", array($encuestaRest,"addVoto"))
+->map("DELETE",	"/encuesta/$1/voto", array($encuestaRest,"delVoto"));
 

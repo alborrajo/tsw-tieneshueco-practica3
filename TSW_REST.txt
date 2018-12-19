@@ -10,14 +10,14 @@ CRUD en REST
 /rest/encuesta/{id}							GET		detalle de encuesta con id: {id} (Devuelve objeto Encuesta, con sus Fechas, Horas y Votos)
 /rest/encuesta/{id}							DELETE	eliminar encuesta {id}
 
-/rest/encuesta/{id}							POST	crear fecha en encuesta {id}
-/rest/encuesta/{id}/{fecha}					DELETE	elimina fecha {fecha} y sus horas en encuesta {id}
+/rest/encuesta/{id}/fecha					POST	crear fecha en encuesta {id}
+/rest/encuesta/{id}/fecha					DELETE	elimina fecha {fecha} y sus horas en encuesta {id}
 
-/rest/encuesta/{id}/{fecha}					POST	crea hora en la fecha {fecha} y encuesta {id}
-/rest/encuesta/{id}/{fecha}/{hora}			DELETE	elimina hora {hora} en la fecha {fecha} de la encuesta {id}
+/rest/encuesta/{id}/hora					POST	crea hora en la fecha {fecha} y encuesta {id}
+/rest/encuesta/{id}/hora					DELETE	elimina hora {hora} en la fecha {fecha} de la encuesta {id}
 
-/rest/encuesta/{id}/{fecha}/{hora}			POST	vota en la {hora} de la {fecha} de la encuesta {id}
-/rest/encuesta/{id}/{fecha}/{hora}/voto	DELETE	quita voto del usuario {user} de la {hora} de la {fecha} de la encuesta {id}
+/rest/encuesta/{id}/voto					POST	vota en la {hora} de la {fecha} de la encuesta {id}
+/rest/encuesta/{id}/voto					DELETE	quita voto del usuario {user} de la {hora} de la {fecha} de la encuesta {id}
 
 
 
@@ -51,31 +51,33 @@ URI						METODO HTTP		Parámetros Ruta URI		Contenido Petición							Contenido 
 																																		404 si falla borrar				propietario de la encuesta
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-/rest/encuesta/{id}		POST			id: id encuesta			Datos para la nueva fecha en JSON:			No u OK						200 OK							Si, deberíamos autenticar
+/rest/encuesta/{id}/fecha	POST		id: id encuesta			Datos para la nueva fecha en JSON:			No u OK						200 OK							Si, deberíamos autenticar
 																{"fecha": string}							error si falla				401 si no envío credenciales	la petición y ser el usuario
 																																		404 si falla					propietario de la encuesta
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-/rest/encuesta/{id}/{fecha}		DELETE	id: id encuesta			No											No u OK						200 OK							Si, deberíamos autenticar
-										fecha: fecha a borrar												error si falla				401 si no envío credenciales	la petición y ser el usuario
+/rest/encuesta/{id}/fecha	DELETE		id: id encuesta			Datos para la fecha a borrar en JSON:		No u OK						200 OK							Si, deberíamos autenticar
+																{"fecha": string}							error si falla				401 si no envío credenciales	la petición y ser el usuario
 																																		404 si falla					propietario de la encuesta
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-/rest/encuesta/{id}/{fecha}		POST			id: encuesta	Datos para la nueva hora en JSON:			No u OK						200 OK							Si, deberíamos autenticar
-												fecha: fecha	{"horaInicio": string,						error si falla				401 si no envío credenciales	la petición y ser el usuario
-																"horaFin": string}														404 si falla					propietario de la encuesta
+/rest/encuesta/{id}/hora	POST		id: encuesta	Datos para la nueva hora en JSON:			No u OK						200 OK							Si, deberíamos autenticar
+														{"fecha": string,
+														"horaInicio": string,						error si falla				401 si no envío credenciales	la petición y ser el usuario
+														"horaFin": string}														404 si falla					propietario de la encuesta
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-/rest/encuesta/{id}/{fecha}/{horaInicio}/{horaFin}	DELETE		id: encuesta	No											No u OK						200 OK							Si, deberíamos autenticar
-													fecha: fecha												error si falla				401 si no envío credenciales	la petición y ser el usuario
-													hora: hora a																			404 si falla					propietario de la encuesta
-														borrar
+/rest/encuesta/{id}/hora	DELETE		id: encuesta	Datos para la hora a borrar en JSON:		No u OK						200 OK							Si, deberíamos autenticar
+														{"fecha": string,							error si falla				401 si no envío credenciales	la petición y ser el usuario
+														"horaInicio": string,													404 si falla					propietario de la encuesta
+														"horaFin": string}
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-/rest/encuesta/{id}/{fecha}/{horaInicio}/{horaFin}/voto	POST	id: encuesta	No											No u OK						200 OK							Si, deberíamos autenticar
-														fecha: fecha												error si falla				401 si no envío credenciales	la petición
-														hora: hora																				404 si falla					
+/rest/encuesta/{id}/voto	POST		id: encuesta	Datos para el nuevo voto					No u OK						200 OK							Si, deberíamos autenticar
+														{"fecha": string,							error si falla				401 si no envío credenciales	la petición
+														"horaInicio": string,													404 si falla					
+														"horaFin": string}
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-/rest/encuesta/{id}/{fecha}/{horaInicio}/{horaFin}/voto	DELETE	id: encuesta	No											No u OK						200 OK							Si, deberíamos autenticar
-														fecha: fecha												error si falla				401 si no envío credenciales	la petición
-														hora: hora 																				404 si falla					
-														user: email
+/rest/encuesta/{id}/voto	DELETE		id: encuesta	Datos del voto a borrar						No u OK						200 OK							Si, deberíamos autenticar
+														{"fecha": string,							error si falla				401 si no envío credenciales	la petición
+														"horaInicio": string, 													404 si falla					
+														"horaFin": string}
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

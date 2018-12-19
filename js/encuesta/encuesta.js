@@ -49,7 +49,12 @@ voteEncuesta: function(formJSON) {
 	$.ajax(
 		{
 			"method": "POST",
-			"url": "/rest/encuesta/"+formJSON.id+"/"+formJSON.fecha+"/"+formJSON.horaInicio+"/"+formJSON.horaFin+"/voto", 
+			"url": "/rest/encuesta/"+formJSON.id+"/voto", 
+
+			// POSTear JSON a pelo
+			'processData': false,
+			'contentType': 'application/json',
+			"data": JSON.stringify(formJSON),
 
 			"username": Login.email,
 			"password": Login.password,
@@ -110,10 +115,14 @@ unvoteEncuesta: function(formJSON) {
 	$.ajax(
 		{
 			"method": "DELETE",
-			"url": "/rest/encuesta/"+formJSON.id+"/"+formJSON.fecha+"/"+formJSON.horaInicio+"/"+formJSON.horaFin+"/voto", 
+			"url": "/rest/encuesta/"+formJSON.id+"/voto", 
 
 			"username": Login.email,
 			"password": Login.password,
+
+			'processData': false,
+			'contentType': 'application/json',
+			"data": JSON.stringify(formJSON),
 
 			"success": function (responseData) {
 				var formId = md5(Login.email+formJSON.fecha+formJSON.horaInicio+formJSON.horaFin);
@@ -435,7 +444,11 @@ deleteFecha: function(idEncuesta, idFecha)
 	$.ajax(
 		{
 			"method": "DELETE",
-			"url": "/rest/encuesta/"+idEncuesta+"/"+idFecha, 
+			"url": "/rest/encuesta/"+idEncuesta+"/fecha", 
+
+			'processData': false,
+			'contentType': 'application/json',
+			"data": JSON.stringify({"fecha": idFecha}),
 
 			"username": Cookies.get('email'),
 			"password": Cookies.get('password'),
@@ -457,7 +470,7 @@ addFecha: function(idEncuesta, fecha)
 	$.ajax(
 		{
 			"method": "POST",
-			"url": "/rest/encuesta/"+idEncuesta, 
+			"url": "/rest/encuesta/"+idEncuesta+"/fecha", 
 
 			"username": Cookies.get('email'),
 			"password": Cookies.get('password'),
@@ -521,7 +534,15 @@ deleteHora: function(idEncuesta, idFecha, horaInicio, horaFin)
 	$.ajax(
 		{
 			"method": "DELETE",
-			"url": "/rest/encuesta/"+idEncuesta+"/"+idFecha+"/"+horaInicio+"/"+horaFin, 
+			"url": "/rest/encuesta/"+idEncuesta+"/hora", 
+
+			'processData': false,
+			'contentType': 'application/json',
+			"data": JSON.stringify({
+				"fecha": idFecha,
+				"horaInicio": horaInicio,
+				"horaFin": horaFin
+			}),
 
 			"username": Cookies.get('email'),
 			"password": Cookies.get('password'),
@@ -542,7 +563,7 @@ addHora: function(idEncuesta, idFecha, formJSON)
 	$.ajax(
 		{
 			"method": "POST",
-			"url": "/rest/encuesta/"+idEncuesta+"/"+idFecha, 
+			"url": "/rest/encuesta/"+idEncuesta+"/hora", 
 
 			"username": Cookies.get('email'),
 			"password": Cookies.get('password'),
@@ -550,7 +571,11 @@ addHora: function(idEncuesta, idFecha, formJSON)
 			// POSTear JSON a pelo
 			'processData': false,
 			'contentType': 'application/json',
-			"data": JSON.stringify(formJSON),
+			"data": JSON.stringify({
+				"fecha": idFecha,
+				"horaInicio": formJSON.horaInicio,
+				"horaFin": formJSON.horaFin
+			}),
 			
 			"success": function (responseData) {
 				$.get('/Templates/encuesta/horaView.hbs', function(data) {
