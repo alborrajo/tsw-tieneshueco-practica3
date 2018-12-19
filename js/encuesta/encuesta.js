@@ -354,7 +354,6 @@ editEncuestaView: function(encuestaData) {
 		$("#addDateForm").submit(function() {
 				var formJSON = ConvertFormToJSON($("#addDateForm"));
 				Encuesta.addFecha(encuestaData.id,ConvertFormToJSON($("#addDateForm")));
-				Encuesta.actualizarFechas(encuestaData.id,formJSON.fecha);
 				return false; // Que no envie el formulario
 			})
 	});
@@ -496,24 +495,24 @@ actualizarFechas: function(idEncuesta, fecha)
 				Encuesta.deleteFecha(idEncuesta, fecha);
 			}
 			);
-	});
 
-	$.get('/Templates/encuesta/newHoraView.hbs',function(data)
-		{
-			var idFecha = fecha;
-			var template = Handlebars.compile(data);
-			var context = {idEncuesta: idEncuesta, idFecha: idFecha};
-			var html = template(context);
-			var elemento = $("#fecha"+fecha);
-			elemento.append(html);
+			$.get('/Templates/encuesta/newHoraView.hbs',function(data)
+			{
+				var idFecha = fecha;
+				var template = Handlebars.compile(data);
+				var context = {idEncuesta: idEncuesta, idFecha: idFecha};
+				var html = template(context);
+				var elemento = $("#fecha"+fecha);
+				elemento.append(html);
 
-			$("#add"+$.escapeSelector(idEncuesta+idFecha)).submit(function() {
-				var formJSON = ConvertFormToJSON($("#add"+$.escapeSelector(idEncuesta+idFecha)));
-				Encuesta.addHora(idEncuesta,idFecha,formJSON);
-				return false; // Que no envie el formulario
-			})
-		}
+				$("#add"+$.escapeSelector(idEncuesta+idFecha)).submit(function() {
+					var formJSON = ConvertFormToJSON($("#add"+$.escapeSelector(idEncuesta+idFecha)));
+					Encuesta.addHora(idEncuesta,idFecha,formJSON);
+					return false; // Que no envie el formulario
+				})
+			}
 			);
+	});
 
 },
 
