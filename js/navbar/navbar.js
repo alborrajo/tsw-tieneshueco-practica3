@@ -23,6 +23,7 @@ Navbar = {
 			$("#logoutButton").click(function() {
 				Cookies.remove('email');
 				Cookies.remove('password');
+				Cookies.remove('locale');
 				window.location = '/';
 			});
 

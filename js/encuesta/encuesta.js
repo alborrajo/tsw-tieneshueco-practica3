@@ -348,6 +348,7 @@ participarEncuestaView: function(domElement, encuestaData) {
 		});
 
 	});
+	setLocale(Cookies.get('locale'));
 },
 
 editEncuestaView: function(encuestaData) {
@@ -437,6 +438,7 @@ editEncuestaView: function(encuestaData) {
 	}
 	
 	);
+	setLocale(Cookies.get('locale'));
 },
 
 deleteFecha: function(idEncuesta, idFecha)
@@ -526,6 +528,7 @@ actualizarFechas: function(idEncuesta, fecha)
 			}
 			);
 	});
+	setLocale(Cookies.get('locale'));
 
 },
 

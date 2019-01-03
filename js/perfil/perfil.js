@@ -42,6 +42,7 @@ Perfil = {
 				Encuesta.deleteEncuesta(encuestaData.id);
 			});
 		});
+		setLocale(Cookies.get('locale'));
 	},
 
 	encuestaCompartidaView: function(domElement, encuestaData) {
@@ -50,6 +51,8 @@ Perfil = {
 			var template=Handlebars.compile(data);
 			domElement.append(template(encuestaData));
 		});
+		setLocale(Cookies.get('locale'));
 	}
+	
 
 }
